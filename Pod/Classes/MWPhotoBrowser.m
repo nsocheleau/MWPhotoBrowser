@@ -67,6 +67,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     _previousPageIndex = NSUIntegerMax;
     _currentVideoIndex = NSUIntegerMax;
     _displayActionButton = YES;
+    _displayDeleteButton = NO;
     _displayNavArrows = NO;
     _zoomPhotosToFill = YES;
     _performingLayout = NO; // Reset on view did appear
@@ -184,6 +185,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     if (self.displayActionButton) {
         _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
     }
+    if (self.displayDeleteButton) {
+        _deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteButtonPressed:)];
+    }
     
     // Update
     [self reloadData];
@@ -274,7 +278,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             self.navigationItem.rightBarButtonItem = _actionButton;
         [items addObject:fixedSpace];
     }
-
+    if ( _deleteButton )
+    {
+      [items addObject:_deleteButton];
+    }
     // Toolbar visibility
     [_toolbar setItems:items];
     BOOL hideToolbar = YES;
@@ -1126,9 +1133,14 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     if ([photo underlyingImage] == nil || ([photo respondsToSelector:@selector(isVideo)] && photo.isVideo)) {
         _actionButton.enabled = NO;
         _actionButton.tintColor = [UIColor clearColor]; // Tint to hide button
+        _deleteButton.enabled = NO;
+        _deleteButton.tintColor = [UIColor clearColor]; // Tint to hide button
+        
     } else {
         _actionButton.enabled = YES;
         _actionButton.tintColor = nil;
+        _deleteButton.enabled = YES;
+        _deleteButton.tintColor = nil;
     }
 	
 }
@@ -1642,6 +1654,32 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 
     }
     
+}
+
+- (void)deleteButtonPressed:(id)sender {
+
+    // Only react when image has loaded
+    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
+        
+        // If they have defined a delegate method then just message them
+        if ([self.delegate respondsToSelector:@selector(photoBrowser:deletePhotoAtIndex:)]) {
+            
+            // Let delegate handle things
+            [self.delegate photoBrowser:self deletePhotoAtIndex:_currentPageIndex];
+        } 
+        if ( _gridController )
+        {
+           [_gridController.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:_currentPageIndex inSection:0]]];
+        }
+        if ( _currentPageIndex == 0 )
+        {
+          [self gotoNextPage];
+        }
+        else {
+          [self gotoPreviousPage];
+        }
+    }
 }
 
 #pragma mark - Action Progress

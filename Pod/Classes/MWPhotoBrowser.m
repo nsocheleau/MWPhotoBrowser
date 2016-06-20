@@ -820,6 +820,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 			MWZoomingScrollView *page = [self dequeueRecycledPage];
 			if (!page) {
 				page = [[MWZoomingScrollView alloc] initWithPhotoBrowser:self];
+        page.backgroundColor = self.backgroundColor;
 			}
 			[_visiblePages addObject:page];
 			[self configurePage:page forIndex:index];
@@ -1329,6 +1330,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     _gridController = [[MWGridViewController alloc] init];
     _gridController.initialContentOffset = _currentGridContentOffset;
     _gridController.browser = self;
+    _gridController.view.backgroundColor = browser.backgroundColor;
     _gridController.selectionMode = _displaySelectionButtons;
     _gridController.view.frame = self.view.bounds;
     _gridController.view.frame = CGRectOffset(_gridController.view.frame, 0, (self.startOnGrid ? -1 : 1) * self.view.bounds.size.height);

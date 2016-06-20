@@ -11,9 +11,9 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MWGridViewController.h"
 #import "MWZoomingScrollView.h"
-
+#import <MessageUI/MessageUI.h>
 // Declare private methods of browser
-@interface MWPhotoBrowser () {
+@interface MWPhotoBrowser () <MFMailComposeViewControllerDelegate> {
     
 	// Data
     NSUInteger _photoCount;

@@ -281,7 +281,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     }
     if (hideToolbar) {
         [_toolbar removeFromSuperview];
-    } else {
+    } else if (_toolbar.superview != self.view) {
         [self.view addSubview:_toolbar];
     }
     
@@ -630,6 +630,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         [self.view setNeedsLayout];
     }
     
+    //  Update grid if it's presented
+    if (_gridController) {
+        [_gridController.collectionView reloadData];
+    }
 }
 
 - (NSUInteger)numberOfPhotos {

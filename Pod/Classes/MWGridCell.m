@@ -89,6 +89,9 @@
 
 - (void)setGridController:(MWGridViewController *)gridController {
     _gridController = gridController;
+    if ( _gridController.browser.backgroundColor) {
+      self.backgroundColor = _gridController.browser.backgroundColor;
+    }
     // Set custom selection image if required
     if (_gridController.browser.customImageSelectedSmallIconName) {
         [_selectedButton setImage:[UIImage imageNamed:_gridController.browser.customImageSelectedSmallIconName] forState:UIControlStateSelected];

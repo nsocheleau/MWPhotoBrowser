@@ -1667,18 +1667,22 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             
             // Let delegate handle things
             [self.delegate photoBrowser:self deletePhotoAtIndex:_currentPageIndex];
-        } 
+        }
+        [_photos removeObjectAtIndex:_currentPageIndex];
+        [_thumbPhotos removeObjectAtIndex:_currentPageIndex];
+        _photoCount -= 1;
+        
         if ( _gridController )
         {
            [_gridController.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:_currentPageIndex inSection:0]]];
         }
-        if ( _currentPageIndex == 0 )
-        {
-          [self gotoNextPage];
+        if ( _currentPageIndex > 0 && _currentPageIndex == _photoCount ){
+            _currentPageIndex -= 1;
         }
-        else {
-          [self gotoPreviousPage];
-        }
+        [UIView animateWithDuration:0.25 animations:^{
+            [self performLayout];
+        }];
+        
     }
 }
 

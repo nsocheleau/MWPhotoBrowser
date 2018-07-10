@@ -18,7 +18,30 @@
 
 static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 
+static NSMutableDictionary<NSString*,NSString*>* overrides;
+
+
 @implementation MWPhotoBrowser
+
++(void)initialize{
+    overrides = [NSMutableDictionary dictionary];
+}
+
++(void)overrideClass:(Class)base withClass:(Class)newClass{
+    NSAssert([newClass isSubclassOfClass:base], @"expecting newClass to be a subclass of base");
+    [overrides setObject:NSStringFromClass(newClass) forKey:NSStringFromClass(base)];
+}
+
++(Class)implementationFor:(Class)base{
+    NSString* className = NSStringFromClass(base);
+    NSString* overridesName = [overrides objectForKey:className];
+    if ( overridesName != nil ){
+        return NSClassFromString(overridesName);
+    }
+    else{
+        return base;
+    }
+}
 
 #pragma mark - Init
 
@@ -703,7 +726,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     } else {
         id <MWPhoto> photo = [self photoAtIndex:index];
         if ([photo respondsToSelector:@selector(caption)]) {
-            if ([photo caption]) captionView = [[MWCaptionView alloc] initWithPhoto:photo];
+            if ([photo caption]) captionView = [[[self.class implementationFor:[MWCaptionView class]] alloc] initWithPhoto:photo];
         }
     }
     captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
@@ -826,7 +849,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             // Add new page
 			MWZoomingScrollView *page = [self dequeueRecycledPage];
 			if (!page) {
-				page = [[MWZoomingScrollView alloc] initWithPhotoBrowser:self];
+				page = [[[self.class implementationFor:[MWZoomingScrollView class]] alloc] initWithPhotoBrowser:self];
         page.backgroundColor = self.backgroundColor;
 			}
 			[_visiblePages addObject:page];
@@ -1339,7 +1362,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     [self clearCurrentVideo];
     
     // Init grid controller
-    _gridController = [[MWGridViewController alloc] init];
+    _gridController = [[[self.class implementationFor:[MWGridViewController class]] alloc] init];
     _gridController.initialContentOffset = _currentGridContentOffset;
     _gridController.browser = self;
     _gridController.selectionMode = _displaySelectionButtons;

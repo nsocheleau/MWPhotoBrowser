@@ -37,14 +37,14 @@
         _photoBrowser = browser;
         
 		// Tap view for background
-		_tapView = [[MWTapDetectingView alloc] initWithFrame:self.bounds];
+		_tapView = [[[MWPhotoBrowser implementationFor:[MWTapDetectingView class]] alloc] initWithFrame:self.bounds];
 		_tapView.tapDelegate = self;
 		_tapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		_tapView.backgroundColor = browser.backgroundColor;
 		[self addSubview:_tapView];
 		
 		// Image view
-		_photoImageView = [[MWTapDetectingImageView alloc] initWithFrame:CGRectZero];
+		_photoImageView = [[[MWPhotoBrowser implementationFor:[MWTapDetectingImageView class]] alloc] initWithFrame:CGRectZero];
 		_photoImageView.tapDelegate = self;
 		_photoImageView.contentMode = UIViewContentModeCenter;
 		_photoImageView.backgroundColor = [UIColor blackColor];

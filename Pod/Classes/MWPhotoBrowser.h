@@ -78,4 +78,6 @@
 - (void)showNextPhotoAnimated:(BOOL)animated;
 - (void)showPreviousPhotoAnimated:(BOOL)animated;
 
++(void)overrideClass:(Class)base withClass:(Class)newClass;
+
 @end

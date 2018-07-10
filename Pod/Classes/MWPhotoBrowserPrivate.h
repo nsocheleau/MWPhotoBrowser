@@ -133,5 +133,8 @@
 - (void)loadAdjacentPhotosIfNecessary:(id<MWPhoto>)photo;
 - (void)releaseAllUnderlyingPhotos:(BOOL)preserveCurrent;
 
+// Customization
++(Class)implementationFor:(Class)base;
+
 @end
 

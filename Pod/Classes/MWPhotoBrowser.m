@@ -1162,7 +1162,7 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
     } else {
         _actionButton.enabled = YES;
         _actionButton.tintColor = nil;
-        _deleteButton.enabled = YES;
+        _deleteButton.enabled = ![_delegate respondsToSelector:@selector(photoBrowser:canDeletePhotoAtIndex:)] || [_delegate photoBrowser:self canDeletePhotoAtIndex:_currentPageIndex];
         _deleteButton.tintColor = nil;
     }
 	

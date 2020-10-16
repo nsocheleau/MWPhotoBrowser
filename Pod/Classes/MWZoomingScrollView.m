@@ -72,6 +72,7 @@
 		self.showsVerticalScrollIndicator = NO;
 		self.decelerationRate = UIScrollViewDecelerationRateFast;
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
         
     }
     return self;
@@ -201,7 +202,7 @@
         id <MWPhoto> photoWithProgress = [dict objectForKey:@"photo"];
         if (photoWithProgress == self.photo) {
             float progress = [[dict valueForKey:@"progress"] floatValue];
-            _loadingIndicator.progress = MAX(MIN(1, progress), 0);
+            self->_loadingIndicator.progress = MAX(MIN(1, progress), 0);
         }
     });
 }

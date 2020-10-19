@@ -107,8 +107,6 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
     _currentGridContentOffset = CGPointMake(0, CGFLOAT_MAX);
     _didSavePreviousStateOfNavBar = NO;
     self.edgesForExtendedLayout = UIRectEdgeAll;
-    _pagingScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    [_pagingScrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     
     // Listen for MWPhoto notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -116,11 +114,6 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
                                                  name:MWPHOTO_LOADING_DID_END_NOTIFICATION
                                                object:nil];
     
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    NSLog(@"log");
 }
 
 - (void)dealloc {
@@ -188,6 +181,7 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
 	_pagingScrollView.showsHorizontalScrollIndicator = NO;
 	_pagingScrollView.showsVerticalScrollIndicator = NO;
 	_pagingScrollView.backgroundColor = self.view.backgroundColor;
+    _pagingScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 	[self.view addSubview:_pagingScrollView];
 	
@@ -1439,7 +1433,6 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
 
         // View controller based so animate away
         _statusBarShouldBeHidden = hidden;
-        self->_pagingScrollView.contentOffset = CGPointMake(self->_pagingScrollView.contentOffset.x, hidden ? -self.navigationController.navigationBar.frame.size.height : 0);
         [UIView animateWithDuration:animationDuration animations:^(void) {
             [self setNeedsStatusBarAppearanceUpdate];
         } completion:^(BOOL finished) {}];
@@ -1476,7 +1469,6 @@ static NSMutableDictionary<NSString*,NSString*>* overrides;
         self->_toolbar.frame = [self frameForToolbarAtOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
         if (hidden) self->_toolbar.frame = CGRectOffset(self->_toolbar.frame, 0, animatonOffset);
         self->_toolbar.alpha = alpha;
-        self->_pagingScrollView.contentOffset = CGPointMake(self->_pagingScrollView.contentOffset.x, hidden ? -self.navigationController.navigationBar.frame.size.height : 0);
         // Captions
         for (MWZoomingScrollView *page in self->_visiblePages) {
             if (page.captionView) {
